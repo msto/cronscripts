@@ -1,21 +1,22 @@
 #!/usr/bin/env python
+"""
+Utility program for adding and modifying modulefiles.
+
+Creates a modulefile at /apps/modulefiles/lab/miket/${module}/${version}.
+The modulefile adds /apps/lab/miket/${module}/${version} to $PATH by default.
+"""
 
 import sys
 import os
-from argparse import ArgumentParser, RawTextHelpFormatter
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from subprocess import call
 from pathlib import Path
 
 editor = os.environ.get('EDITOR', 'vim')
 
 parser = ArgumentParser(
-    formatter_class=RawTextHelpFormatter,
-    description="""Utility program for adding and modifying modulefiles.
-
-Creates a modulefile at /apps/modulefiles/lab/miket/${module}/${version}.
-The modulefile adds /apps/lab/miket/${module}/${version} to $PATH by default.\
-""")
-
+    formatter_class=RawDescriptionHelpFormatter,
+    description=__doc__)
 parser.add_argument('module', help='Module name')
 parser.add_argument('version', help='Module version')
 parser.add_argument('-b', '--bin-root', default=False, action='store_true',
@@ -24,7 +25,7 @@ parser.add_argument('-f', '--overwrite', default=False, action='store_true',
                     help='Overwrite existing modulefile.')
 parser.add_argument('-e', '--edit', default=False, action='store_true',
                     help='Open modulefile in editor. If modulefile does not '
-                    'exist,\ndefault template will be written first.')
+                    'exist, default template will be written first.')
 args = parser.parse_args()
 
 root_dir = Path('/apps/modulefiles/lab/miket')
