@@ -1,0 +1,15 @@
+#%Module1.0
+#
+# [app] v[version]
+#
+proc ModulesHelp { } {
+	global version
+	
+	puts stderr "\tThis loads [app]-[version] environment"
+}
+
+module-whatis	"Loads [app]-[version] environment"
+
+set	[app]version	[version]
+set 	[app]_root	/apps/lab/miket/[app]/[version]/
+prepend-path	PATH	$[app]_root
