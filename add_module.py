@@ -7,6 +7,7 @@ The modulefile adds /apps/lab/miket/${module}/${version} to $PATH by default.
 """
 
 import sys
+#print(sys.version_info)
 import os
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from subprocess import call
@@ -28,16 +29,18 @@ parser.add_argument('-e', '--edit', default=False, action='store_true',
                     'exist, default template will be written first.')
 args = parser.parse_args()
 
-root_dir = Path('/apps/modulefiles/lab/miket')
-template = Path('/apps/modulefiles/lab/miket/template')
+MODULEFILES = os.environ.get('MODULEFILES', '/modulefiles')
+MODULES = os.environ.get('MODULES', '/modules')
+root_dir = Path(MODULEFILES)
+template = Path('~/local/cronscripts/modulefile.template')
 
 # Make directory for software if it was not previously installed
-module_dir = root_dir / args.module
-if not module_dir.is_dir():
-    module_dir.mkdir()
+modulefile_dir = root_dir / args.module
+if not modulefile_dir.is_dir():
+    modulefile_dir.mkdir()
 
 # Create modulefile for this version
-modulefile = module_dir / args.version
+modulefile = modulefile_dir / args.version
 if modulefile.exists():
     if args.edit:
         call([editor, str(modulefile)])
@@ -64,9 +67,9 @@ proc ModulesHelp {{ }} {{
 module-whatis   "Loads {module}-{version} environment"
 
 set     {module}version    {version}
-set     {module}_root      /apps/lab/miket/{module}/{version}
+set     {module}_root      {MODULES}/{module}/{version}
 prepend-path    PATH    {path}
-""".format(module=args.module, version=args.version, path=path)
+""".format(module=args.module, version=args.version, path=path, MODULES=MODULES)
 
 with modulefile.open('w') as m:
     if sys.version_info.major >= 3:
