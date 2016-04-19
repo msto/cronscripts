@@ -69,7 +69,10 @@ prepend-path    PATH    {path}
 """.format(module=args.module, version=args.version, path=path)
 
 with modulefile.open('w') as m:
-    m.write(unicode(template))
+    if sys.version_info.major >= 3:
+        m.write(template)
+    else:
+        m.write(unicode(template))
 
 if args.edit:
     call([editor, str(modulefile)])
