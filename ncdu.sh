@@ -5,7 +5,11 @@
 #
 # Distributed under terms of the MIT license.
 #
-PATH=/bin:/usr/bin:/apps/lab/miket/ncdu/1.12/bin
+PATH=/bin:/usr/bin
+
+# Add ncdu and parsing util
+PATH=$PATH:/apps/lab/miket/ncdu/1.12/bin
+PATH=$PATH:/PHShome/my520/code/cronscripts
 
 dir=$1
 
@@ -18,16 +22,21 @@ mkdir -p ${dir}/du_logs/monthly
 # Log disk usage daily
 currdate=$(date +"%Y%m%d")
 NCDU_LOG=${dir}/du_logs/daily/${currdate}.ncdu.gz
+NCDU_CONVERT=${dir}/du_logs/daily/${currdate}.dirstats.csv.gz
+
 ncdu -x -r -0 --si -o - $dir | gzip -c > $NCDU_LOG
+parse_ncdu.py -z ${NCDU_LOG} ${NCDU_CONVERT}
 
 # Log weekly disk usage every Saturday
 if [ $(date +'%u') -eq 6 ]; then
     cp ${NCDU_LOG} ${dir}/du_logs/weekly/
+    cp ${NCDU_CONVERT} ${dir}/du_logs/weekly/
 fi
 
 # Log disk usage on the first of every month
 if [ $(date +'%e') -eq 1 ]; then
     cp ${NCDU_LOG} ${dir}/du_logs/monthly/
+    cp ${NCDU_CONVERT} ${dir}/du_logs/monthly/
 fi
 
 # Clean log directories.
