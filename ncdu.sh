@@ -21,7 +21,7 @@ mkdir -p ${dir}/du_logs/monthly
 
 # Log disk usage daily
 currdate=$(date +"%Y%m%d")
-NCDU_LOG=${dir}/du_logs/daily/${currdate}.ncdu.gz
+NCDU_LOG=${dir}/du_logs/daily/${currdate}.ncdu.json.gz
 NCDU_CONVERT=${dir}/du_logs/daily/${currdate}.dirstats.csv.gz
 
 ncdu -x -r -0 --si -o - $dir | gzip -c > $NCDU_LOG
