@@ -18,7 +18,6 @@ mkdir -p ${dir}/du_logs/monthly
 # Log disk usage daily
 currdate=$(date +"%Y%m%d")
 du -sh -c ${dir}/* 2> /dev/null | sort -h -r > ${dir}/du_logs/daily/${currdate}.txt
-du -s -c ${dir}/* 2> /dev/null | sort -h -r > ${dir}/du_logs/daily/${currdate}_raw.txt
 
 # Log weekly disk usage every Saturday
 if [ $(date +'%u') -eq 6 ]; then
