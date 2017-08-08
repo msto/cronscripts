@@ -15,13 +15,16 @@ import gzip
 import datetime
 import contextlib
 import json
+from collections import defaultdict
 import humanfriendly
 
 
 class NcduParser:
     def __init__(self, ncdu_data, logfile):
         self.ncdu_data = ncdu_data
-        self.dirstats = {}
+        self.dir_usage = {}
+        self.dir_entries = defaultdict(int)
+        self.top_entries = defaultdict(int)
         self.depths = {}
         self.logfile = csv.writer(logfile, delimiter=',',
                                   quoting=csv.QUOTE_MINIMAL)
@@ -58,15 +61,21 @@ class NcduParser:
             for entry in ncdu_entry[1:]:
                 name, usage = self.parse_ncdu_subdir(entry, dirname)
                 total_usage += usage
+                self.top_entries[dirname] += 1
 
             # Would be better to store all intermediate resuts in dict,
             # but I don't want to worry about filtering non-directories
-            self.dirstats[dirname] = total_usage
+            self.dir_usage[dirname] = total_usage
+
+            # Count subdirectory files and self
+            self.dir_entries[parent_dir] += self.dir_entries[dirname]
+            self.dir_entries[parent_dir] += 1
 
             return dirname, total_usage
 
         elif isinstance(ncdu_entry, dict):
             fname = os.path.join(parent_dir, ncdu_entry['name'])
+            self.dir_entries[parent_dir] += 1
             return fname, ncdu_entry['dsize']
 
         else:
@@ -74,16 +83,19 @@ class NcduParser:
             raise Exception('Invalid entry type: {0}'.format(dtype))
 
     def write_dirstats(self):
-        header = 'directory size_human size_bytes date depth'.split()
+        header = ('directory size_human size_bytes date depth file_count '
+                  'total_files').split()
         self.logfile.writerow(header)
 
         date = datetime.date.today()
 
-        for dirname in sorted(self.dirstats.keys()):
-            dsize = self.dirstats[dirname]
+        for dirname in sorted(self.dir_usage.keys()):
+            dsize = self.dir_usage[dirname]
             hum_dsize = humanfriendly.format_size(dsize, binary=True)
-
-            row = [dirname, hum_dsize, dsize, date, self.depths[dirname]]
+            depths = self.depths[dirname]
+            f_count = self.top_entries[dirname]
+            total_f = self.dir_entries[dirname]
+            row = [dirname, hum_dsize, dsize, date, depths, f_count, total_f]
             self.logfile.writerow(row)
 
 
