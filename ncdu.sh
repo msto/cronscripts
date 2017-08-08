@@ -20,28 +20,28 @@ mkdir -p ${dir}/du_logs/daily
 mkdir -p ${dir}/du_logs/weekly
 mkdir -p ${dir}/du_logs/monthly
 
-# Log disk usage daily
+# Log disk usage weekly
 currdate=$(date +"%Y%m%d")
-NCDU_LOG=${dir}/du_logs/daily/${currdate}.ncdu.json.gz
-NCDU_CONVERT=${dir}/du_logs/daily/${currdate}.dirstats.csv.gz
+NCDU_LOG=${dir}/du_logs/weekly/${currdate}.ncdu.json.gz
+NCDU_CONVERT=${dir}/du_logs/weekly/${currdate}.dirstats.csv.gz
 
 $ncdu -x -r -0 --si -o - $dir | gzip -c > $NCDU_LOG
 $python $ncdu_parser -z ${NCDU_LOG} ${NCDU_CONVERT}
 
 # Log weekly disk usage every Saturday
-if [ $(date +'%u') -eq 6 ]; then
-    cp ${NCDU_LOG} ${dir}/du_logs/weekly/
-    cp ${NCDU_CONVERT} ${dir}/du_logs/weekly/
-fi
+# if [ $(date +'%u') -eq 6 ]; then
+    # cp ${NCDU_LOG} ${dir}/du_logs/weekly/
+    # cp ${NCDU_CONVERT} ${dir}/du_logs/weekly/
+# fi
 
 # Log disk usage on the first of every month
-if [ $(date +'%e') -eq 1 ]; then
-    cp ${NCDU_LOG} ${dir}/du_logs/monthly/
-    cp ${NCDU_CONVERT} ${dir}/du_logs/monthly/
-fi
+# if [ $(date +'%e') -eq 1 ]; then
+    # cp ${NCDU_LOG} ${dir}/du_logs/monthly/
+    # cp ${NCDU_CONVERT} ${dir}/du_logs/monthly/
+# fi
 
 # Clean log directories.
 # Keep daily logs for a week and weekly logs for 90 days
 # Keep daily logs for 30 days and weekly logs for a year
-tmpwatch 30d ${dir}/du_logs/daily
-tmpwatch 365d ${dir}/du_logs/weekly
+# tmpwatch 30d ${dir}/du_logs/daily
+# tmpwatch 365d ${dir}/du_logs/weekly
