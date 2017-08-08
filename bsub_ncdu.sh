@@ -26,4 +26,4 @@ mkdir -p ${dir}/du_logs/lsf_logs
 
 currdate=$(date +"%Y%m%d")
 
-bsub -J "ncdu_${currdate}_${dir}" -sla miket_sc -q normal -o ${dir}/du_logs/lsf_logs/${currdate}_ncdu.out "/bin/bash /PHShome/my520/code/cronscripts/ncdu.sh ${dir}" > /dev/null
+bsub -J "ncdu_${currdate}_${dir}" -sla miket_sc -q long -o ${dir}/du_logs/lsf_logs/${currdate}_ncdu.out "/bin/bash /PHShome/my520/code/cronscripts/ncdu.sh ${dir}" > /dev/null
