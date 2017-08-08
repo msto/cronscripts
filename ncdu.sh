@@ -7,9 +7,10 @@
 #
 PATH=/bin:/usr/bin
 
-# Add ncdu and parsing util
-PATH=$PATH:/apps/lab/miket/ncdu/1.12/bin
-PATH=$PATH:/PHShome/my520/code/cronscripts
+# Add python, ncdu, and parsing util
+python=/apps/lab/miket/anaconda/4.0.5/envs/py35/bin/python
+ncdu=/apps/lab/miket/ncdu/1.12/bin/ncdu
+ncdu_parser=/PHShome/my520/code/cronscripts/parse_ncdu.py
 
 dir=$1
 
@@ -24,8 +25,8 @@ currdate=$(date +"%Y%m%d")
 NCDU_LOG=${dir}/du_logs/daily/${currdate}.ncdu.json.gz
 NCDU_CONVERT=${dir}/du_logs/daily/${currdate}.dirstats.csv.gz
 
-ncdu -x -r -0 --si -o - $dir | gzip -c > $NCDU_LOG
-parse_ncdu.py -z ${NCDU_LOG} ${NCDU_CONVERT}
+$ncdu -x -r -0 --si -o - $dir | gzip -c > $NCDU_LOG
+$python $ncdu_parser -z ${NCDU_LOG} ${NCDU_CONVERT}
 
 # Log weekly disk usage every Saturday
 if [ $(date +'%u') -eq 6 ]; then
