@@ -51,9 +51,9 @@ fi
 
 # tmpwatch not installed on WID machines, so use ls
 if [[ $(ls ${DAILY_DIR} | wc -l) -gt 7 ]]; then
-  ls -t ${DAILY_DIR} | cat | sed '7d' | xargs rm
+  ls -dt ${DAILY_DIR}/* | tail -n +8 | xargs rm
 fi
 
 if [[ $(ls ${WEEKLY_DIR} | wc -l) -gt 30 ]]; then
-  ls -t ${WEEKLY_DIR} | cat | sed '30d' | xargs rm
+  ls -dt ${WEEKLY_DIR}/* | tail -n +31 | xargs rm
 fi
