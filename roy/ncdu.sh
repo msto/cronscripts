@@ -54,6 +54,6 @@ if [[ $(ls ${DAILY_DIR} | wc -l) -gt 7 ]]; then
   ls -dt ${DAILY_DIR}/* | tail -n +8 | xargs rm
 fi
 
-if [[ $(ls ${WEEKLY_DIR} | wc -l) -gt 30 ]]; then
-  ls -dt ${WEEKLY_DIR}/* | tail -n +31 | xargs rm
+if [[ $(ls ${WEEKLY_DIR} | wc -l) -gt 52 ]]; then
+  ls -dt ${WEEKLY_DIR}/* | tail -n +53 | xargs rm
 fi
